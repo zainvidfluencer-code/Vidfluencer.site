@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Vidfluencer.AI"
+version = "1.0.0"
+id = "artifacts/vidfluencer-landing"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19747
+
+[services.development]
+run = "pnpm --filter @workspace/vidfluencer-landing run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/vidfluencer-landing", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/vidfluencer-landing/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19747"
+BASE_PATH = "/"
