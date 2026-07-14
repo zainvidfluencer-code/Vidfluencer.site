@@ -17,7 +17,7 @@ export function Nav() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer">
-            <img src={logoSrc} alt="Vidfluencer.io" className="h-12 md:h-14 w-auto object-contain" />
+            <img src={logoSrc} alt="Vidfluencer.io" className="h-10 md:h-12 w-auto object-contain shrink-0" />
           </div>
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
