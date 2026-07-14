@@ -1,0 +1,1 @@
+- [Orval zod codegen + email format](orval-zod-email-format.md) — `format: email` in openapi.yaml breaks `pnpm run codegen` typecheck; avoid it.

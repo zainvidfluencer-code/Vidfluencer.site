@@ -10,6 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslate } from "@/contexts/language-currency-context";
 
 const waitlistSchema = z.object({
   fullName: z.string().min(1, "Full name is required").max(100, "Name is too long"),
@@ -19,6 +20,7 @@ const waitlistSchema = z.object({
 type WaitlistFormValues = z.infer<typeof waitlistSchema>;
 
 export function WaitlistForm() {
+  const { t } = useTranslate();
   const [isSuccess, setIsSuccess] = useState(false);
   const [conflictError, setConflictError] = useState(false);
 
@@ -45,7 +47,7 @@ export function WaitlistForm() {
           if (error?.status === 409) {
             setConflictError(true);
           } else {
-            const errorMsg = error?.data?.error || "Something went wrong. Please try again.";
+            const errorMsg = error?.data?.error || t('waitlist.error');
             form.setError("root", { type: "manual", message: errorMsg });
           }
         },
@@ -69,9 +71,9 @@ export function WaitlistForm() {
               <CheckCircle2 className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h3 className="text-xl font-bold tracking-tight mb-1">You're on the list!</h3>
+              <h3 className="text-xl font-bold tracking-tight mb-1">{t('waitlist.successTitle')}</h3>
               <p className="text-primary-foreground/80 text-sm">
-                Keep an eye on your inbox. We'll be in touch soon.
+                {t('waitlist.successDesc')}
               </p>
             </div>
           </motion.div>
@@ -89,7 +91,7 @@ export function WaitlistForm() {
                   <Alert className="bg-primary/5 text-primary border-primary/20">
                     <CheckCircle2 className="h-4 w-4" />
                     <AlertDescription>
-                      Good news — you're already on the waitlist!
+                      {t('waitlist.conflict')}
                     </AlertDescription>
                   </Alert>
                 )}
@@ -108,7 +110,7 @@ export function WaitlistForm() {
                       <FormItem>
                         <FormControl>
                           <Input 
-                            placeholder="Full Name" 
+                            placeholder={t('waitlist.fullName')} 
                             className="h-12 px-4 bg-white/80 backdrop-blur-sm border-gray-200 focus-visible:ring-primary shadow-sm text-base placeholder:text-gray-400"
                             {...field} 
                           />
@@ -124,7 +126,7 @@ export function WaitlistForm() {
                       <FormItem>
                         <FormControl>
                           <Input 
-                            placeholder="Email Address" 
+                            placeholder={t('waitlist.email')} 
                             type="email"
                             className="h-12 px-4 bg-white/80 backdrop-blur-sm border-gray-200 focus-visible:ring-primary shadow-sm text-base placeholder:text-gray-400"
                             {...field} 
@@ -144,13 +146,13 @@ export function WaitlistForm() {
                     <Spinner className="w-5 h-5 mr-2 text-white" />
                   ) : (
                     <>
-                      Join the Waitlist
+                      {t('waitlist.button')}
                       <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                     </>
                   )}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground font-medium mt-4">
-                  By joining, you agree to early access communications. No spam, ever.
+                  {t('waitlist.disclaimer')}
                 </p>
               </form>
             </Form>

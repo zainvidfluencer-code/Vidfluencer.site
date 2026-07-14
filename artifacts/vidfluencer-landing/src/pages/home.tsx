@@ -3,6 +3,11 @@ import { WaitlistForm } from "@/components/waitlist-form";
 import { motion } from "framer-motion";
 import { CheckCircle2, TrendingUp, ShieldCheck, Users, PlaySquare, ArrowRight, Star } from "lucide-react";
 import { ReactNode } from "react";
+import { Nav } from "@/components/nav";
+import { Footer } from "@/components/footer";
+import { useTranslate } from "@/contexts/language-currency-context";
+import { formatCurrency } from "@/lib/i18n";
+import { SiDiscord } from "react-icons/si";
 
 function FadeIn({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return (
@@ -18,29 +23,12 @@ function FadeIn({ children, delay = 0 }: { children: ReactNode; delay?: number }
 }
 
 export default function Home() {
+  const { t, locale } = useTranslate();
+  const formattedRate = formatCurrency(10, locale);
+
   return (
     <div className="min-h-screen bg-white text-foreground flex flex-col font-sans overflow-x-hidden selection:bg-primary/20 selection:text-primary">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-              <PlaySquare className="w-4 h-4 fill-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-primary">Vidfluencer.AI</span>
-          </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-            <a href="#brands" className="hover:text-primary transition-colors">For Brands</a>
-            <a href="#creators" className="hover:text-primary transition-colors">For Creators</a>
-            <a href="#how-it-works" className="hover:text-primary transition-colors">How it Works</a>
-          </div>
-          <div>
-            <a href="#waitlist" className="bg-primary text-primary-foreground px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-primary/90 transition-all shadow-sm hover:shadow">
-              Get Early Access
-            </a>
-          </div>
-        </div>
-      </nav>
+      <Nav />
 
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 md:pt-48 md:pb-32 overflow-hidden">
@@ -50,20 +38,26 @@ export default function Home() {
         <div className="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 text-center md:text-left">
             <FadeIn>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-primary text-sm font-semibold mb-6">
-                <Star className="w-4 h-4 text-blue-500 fill-blue-500" />
-                <span>The #1 Creator Marketplace</span>
+              <div className="inline-flex flex-col md:flex-row items-center md:items-start gap-3 mb-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-primary text-sm font-semibold">
+                  <Star className="w-4 h-4 text-blue-500 fill-blue-500" />
+                  <span>{t('hero.badge')}</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-green-700 text-sm font-semibold">
+                  <TrendingUp className="w-4 h-4" />
+                  <span>{t('hero.rate', { rate: formattedRate })}</span>
+                </div>
               </div>
               <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 leading-[1.1] mb-6">
-                Where great brands meet <span className="text-primary relative inline-block">
-                  top creators
+                {t('hero.title1')}<span className="text-primary relative inline-block">
+                  {t('hero.title2')}
                   <svg className="absolute w-full h-3 -bottom-1 left-0 text-blue-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
                     <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto md:mx-0 leading-relaxed">
-                Discover talent, execute campaigns, and manage payments—all in one trusted hub. Join the waitlist to get early access to the future of the creator economy.
+                {t('hero.desc')}
               </p>
             </FadeIn>
             
@@ -115,8 +109,8 @@ export default function Home() {
                     <CheckCircle2 className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 font-medium">Deal Closed</p>
-                    <p className="font-bold text-gray-900">$2,500</p>
+                    <p className="text-xs text-gray-500 font-medium">{t('deal.closed')}</p>
+                    <p className="font-bold text-gray-900">{formatCurrency(2500, locale)}</p>
                   </div>
                 </div>
               </div>
@@ -126,15 +120,22 @@ export default function Home() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-12 border-y border-gray-100 bg-gray-50/50">
+      <section id="how-it-works" className="py-12 border-y border-gray-100 bg-gray-50/50">
         <div className="container mx-auto px-6">
-          <p className="text-center text-sm font-semibold text-gray-400 mb-8 tracking-widest uppercase">Trusted by forward-thinking teams</p>
-          <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            {/* Abstract geometric logos representing brands */}
-            <div className="flex items-center gap-2 font-bold text-xl"><div className="w-6 h-6 bg-current rounded-sm transform rotate-45"></div>Acme Corp</div>
-            <div className="flex items-center gap-2 font-bold text-xl"><div className="w-6 h-6 border-4 border-current rounded-full"></div>Lumina</div>
-            <div className="flex items-center gap-2 font-bold text-xl"><div className="w-6 h-6 bg-current rounded-tl-xl rounded-br-xl"></div>Nebula</div>
-            <div className="flex items-center gap-2 font-bold text-xl"><div className="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[20px] border-b-current"></div>Apex</div>
+          <p className="text-center text-sm font-semibold text-gray-400 mb-8 tracking-widest uppercase">{t('brands.trusted')}</p>
+          <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-80">
+            {/* Real brands */}
+            <div className="font-black text-2xl tracking-tighter text-gray-900">REVIZELY.AI</div>
+            <div className="font-extrabold text-2xl tracking-widest text-gray-800">ASPIRA</div>
+            
+            {/* Blurred placeholders */}
+            <div className="font-bold text-xl text-gray-400 blur-[4px] select-none pointer-events-none">NEXUS</div>
+            <div className="font-bold text-xl text-gray-400 blur-[4px] select-none pointer-events-none">LUMINA</div>
+            <div className="font-bold text-xl text-gray-400 blur-[4px] select-none pointer-events-none">HORIZON</div>
+            
+            <div className="text-xs font-semibold text-gray-500 bg-gray-200/60 px-3 py-1.5 rounded-full border border-gray-200">
+              {t('brands.manyMore')}
+            </div>
           </div>
         </div>
       </section>
@@ -144,8 +145,8 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mb-16">
             <FadeIn>
-              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Find the perfect voice for your brand.</h2>
-              <p className="text-lg text-gray-600">Stop scrolling endlessly. Our marketplace gives you access to vetted creators with verified audience metrics, making campaign execution seamless and predictable.</p>
+              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">{t('brands.title')}</h2>
+              <p className="text-lg text-gray-600">{t('brands.desc')}</p>
             </FadeIn>
           </div>
           
@@ -155,8 +156,8 @@ export default function Home() {
                 <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Users className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Verified Creators</h3>
-                <p className="text-gray-600 leading-relaxed">Access real engagement data and demographic breakdowns. No fake followers, just real influence.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{t('brands.card1.title')}</h3>
+                <p className="text-gray-600 leading-relaxed">{t('brands.card1.desc')}</p>
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
@@ -164,8 +165,8 @@ export default function Home() {
                 <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <ShieldCheck className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Seamless Contracts</h3>
-                <p className="text-gray-600 leading-relaxed">Standardized agreements and licensing terms built right into the platform. Legal compliance made easy.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{t('brands.card2.title')}</h3>
+                <p className="text-gray-600 leading-relaxed">{t('brands.card2.desc')}</p>
               </div>
             </FadeIn>
             <FadeIn delay={0.3}>
@@ -173,8 +174,8 @@ export default function Home() {
                 <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">ROI Tracking</h3>
-                <p className="text-gray-600 leading-relaxed">Track campaign performance in real-time. Measure views, clicks, and conversions from one dashboard.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{t('brands.card3.title')}</h3>
+                <p className="text-gray-600 leading-relaxed">{t('brands.card3.desc')}</p>
               </div>
             </FadeIn>
           </div>
@@ -198,11 +199,11 @@ export default function Home() {
                             <span className="font-bold text-white">B{i}</span>
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-semibold">Inbound Brand Deal</h4>
-                            <p className="text-sm text-white/60">Tech Category • Video</p>
+                            <h4 className="font-semibold">{t('deal.inbound')}</h4>
+                            <p className="text-sm text-white/60">{t('deal.tech')}</p>
                           </div>
                           <div className="font-bold text-green-400">
-                            ${i * 1500}
+                            {formatCurrency(i * 1500, locale)}
                           </div>
                         </div>
                       ))}
@@ -213,18 +214,23 @@ export default function Home() {
             </div>
             <div className="flex-1 order-1 md:order-2">
               <FadeIn>
-                <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">Monetize your audience on your terms.</h2>
-                <p className="text-lg text-white/70 mb-8 leading-relaxed">Receive inbound offers from brands that align with your content. Keep your creative freedom and get paid securely and on time.</p>
+                <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">{t('creators.title')}</h2>
+                <p className="text-lg text-white/70 mb-8 leading-relaxed">{t('creators.desc')}</p>
                 <ul className="space-y-4">
                   {[
-                    "Guaranteed payments held in escrow",
-                    "Direct messaging with brand partners",
-                    "Keep 100% of your creative control",
-                    "Set your own rates and availability"
+                    t('creators.bullet1'),
+                    t('creators.bullet2'),
+                    t('creators.bullet3'),
+                    t('creators.bullet4'),
+                    t('creators.bullet5')
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-white/90">
-                      <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0" />
-                      <span>{item}</span>
+                      {i === 4 ? (
+                        <Star className="w-5 h-5 text-amber-400 flex-shrink-0 fill-amber-400" />
+                      ) : (
+                        <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                      )}
+                      <span className={i === 4 ? "font-medium text-white" : ""}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -239,8 +245,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-50 via-white to-white" />
         <div className="container mx-auto px-6 relative z-10">
           <FadeIn>
-            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">Ready to shape the <br className="hidden md:block"/>creator economy?</h2>
-            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">Join the waitlist today. We're launching soon, and early members will receive exclusive platform perks.</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">{t('cta.title')}</h2>
+            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">{t('cta.desc')}</p>
             <div className="max-w-md mx-auto">
               <WaitlistForm />
             </div>
@@ -248,23 +254,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-12">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2">
-              <PlaySquare className="w-5 h-5 text-primary" />
-              <span className="font-bold text-gray-900 tracking-tight">Vidfluencer.AI</span>
+      {/* Discord CTA Section */}
+      <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-indigo-900 via-gray-900 to-gray-900 opacity-80" />
+        <div className="container mx-auto px-6 relative z-10 text-center">
+          <FadeIn>
+            <div className="w-16 h-16 bg-[#5865F2]/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <SiDiscord className="w-8 h-8 text-[#5865F2]" />
             </div>
-            <p className="text-sm text-gray-500">© {new Date().getFullYear()} Vidfluencer.AI. All rights reserved.</p>
-            <div className="flex gap-6 text-sm font-medium text-gray-500">
-              <a href="#" className="hover:text-primary transition-colors">Twitter</a>
-              <a href="#" className="hover:text-primary transition-colors">LinkedIn</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms</a>
-            </div>
-          </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">{t('cta.discord')}</h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">{t('discord.desc')}</p>
+            <a 
+              href="https://discord.gg/B7q6fe5BHH" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#5865F2] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#4752C4] transition-all shadow-lg hover:shadow-[#5865F2]/25"
+            >
+              <SiDiscord className="w-5 h-5" />
+              {t('cta.discord')}
+            </a>
+          </FadeIn>
         </div>
-      </footer>
+      </section>
+
+      <Footer />
     </div>
   );
 }
