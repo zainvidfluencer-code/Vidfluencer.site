@@ -10,8 +10,8 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "What is Vidfluencer.AI?",
-      answer: "Vidfluencer.AI is a premier User-Generated Content (UGC) and affiliate marketing marketplace. We connect forward-thinking brands with vetted creators to produce authentic, high-converting video content."
+      question: "What is Vidfluencer.io?",
+      answer: "Vidfluencer.io is a premier User-Generated Content (UGC) and affiliate marketing marketplace. We connect forward-thinking brands with vetted creators to produce authentic, high-converting video content."
     },
     {
       question: "How does the UGC and affiliate marketplace work?",
@@ -62,7 +62,7 @@ export default function FAQ() {
               Frequently Asked Questions
             </h1>
             <p className="text-lg text-gray-600">
-              Everything you need to know about the Vidfluencer.AI platform.
+              Everything you need to know about the Vidfluencer.io platform.
             </p>
           </motion.div>
 

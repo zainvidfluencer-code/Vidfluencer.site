@@ -13,7 +13,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <Link href="/">
             <div className="flex items-center gap-2 cursor-pointer">
-              <img src={logoSrc} alt="Vidfluencer.AI" className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
+              <img src={logoSrc} alt="Vidfluencer.io" className="h-8 md:h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
             </div>
           </Link>
           <p className="text-sm text-gray-500">{t('footer.rights', { year })}</p>
