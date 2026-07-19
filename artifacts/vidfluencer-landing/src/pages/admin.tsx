@@ -2,6 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'wouter';
 import logoSrc from '@/assets/logo.png';
 
+// In production (GitHub Pages / custom domain), VITE_API_URL is set to the
+// Replit API server URL (e.g. https://api.vidfluencer.io).
+// In local dev it is empty, so fetch paths stay relative.
+const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
+
 interface Signup {
   id: number;
   fullName: string;
@@ -31,7 +36,7 @@ function LoginPage({ onSuccess }: { onSuccess: () => void }) {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await fetch(`${API_BASE}/api/admin/login`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -125,7 +130,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const load = useCallback(() => {
     setLoading(true);
-    fetch('/api/admin/signups', { credentials: 'include' })
+    fetch(`${API_BASE}/api/admin/signups`, { credentials: 'include' })
       .then(async res => {
         if (!res.ok) throw new Error('Failed to load');
         return res.json() as Promise<Signup[]>;
@@ -138,7 +143,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   useEffect(() => { load(); }, [load]);
 
   async function handleLogout() {
-    await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' });
+    await fetch(`${API_BASE}/api/admin/logout`, { method: 'POST', credentials: 'include' });
     onLogout();
   }
 
@@ -273,7 +278,7 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
-    fetch('/api/admin/signups', { credentials: 'include' })
+    fetch(`${API_BASE}/api/admin/signups`, { credentials: 'include' })
       .then(res => setAuthed(res.ok))
       .catch(() => setAuthed(false));
   }, []);

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Vidfluencer.io</title>
+    <script>
+      // GitHub Pages SPA redirect trick.
+      // When GH Pages 404s on a deep path (e.g. /admin), it serves this file.
+      // We encode the intended path as a query param and redirect to the root,
+      // where index.html will decode it and restore the URL before React boots.
+      (function () {
+        var loc = window.location;
+        var dest =
+          loc.origin +
+          '/?p=' +
+          encodeURIComponent(loc.pathname + loc.search) +
+          (loc.hash ? '&h=' + encodeURIComponent(loc.hash.slice(1)) : '');
+        loc.replace(dest);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
