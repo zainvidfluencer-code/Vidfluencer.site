@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, waitlistSignupsTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
-import { COOKIE_NAME, requireAdmin, signAdminToken } from "../middlewares/auth.js";
+import { requireAdmin, signAdminToken } from "../middlewares/auth.js";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -28,20 +28,11 @@ router.post("/admin/login", (req, res): void => {
 
   const token = signAdminToken(email.trim().toLowerCase());
 
-  res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000, // 24h
-    path: "/",
-  });
-
-  res.status(200).json({ ok: true });
+  res.status(200).json({ ok: true, token });
 });
 
 // POST /api/admin/logout
 router.post("/admin/logout", (_req, res): void => {
-  res.clearCookie(COOKIE_NAME, { path: "/" });
   res.status(200).json({ ok: true });
 });
 

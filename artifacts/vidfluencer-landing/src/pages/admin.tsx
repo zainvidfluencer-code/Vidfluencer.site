@@ -6,6 +6,7 @@ import logoSrc from '@/assets/logo.png';
 // Replit API server URL (e.g. https://api.vidfluencer.io).
 // In local dev it is empty, so fetch paths stay relative.
 const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
+const TOKEN_KEY = 'admin_token';
 
 interface Signup {
   id: number;
@@ -38,11 +39,12 @@ function LoginPage({ onSuccess }: { onSuccess: () => void }) {
     try {
       const res = await fetch(`${API_BASE}/api/admin/login`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       if (res.ok) {
+        const data = await res.json() as { token: string };
+        localStorage.setItem(TOKEN_KEY, data.token);
         onSuccess();
       } else {
         const data = await res.json().catch(() => ({}));
@@ -130,7 +132,10 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const load = useCallback(() => {
     setLoading(true);
-    fetch(`${API_BASE}/api/admin/signups`, { credentials: 'include' })
+    const token = localStorage.getItem(TOKEN_KEY);
+    fetch(`${API_BASE}/api/admin/signups`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
       .then(async res => {
         if (!res.ok) throw new Error('Failed to load');
         return res.json() as Promise<Signup[]>;
@@ -143,7 +148,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   useEffect(() => { load(); }, [load]);
 
   async function handleLogout() {
-    await fetch(`${API_BASE}/api/admin/logout`, { method: 'POST', credentials: 'include' });
+    localStorage.removeItem(TOKEN_KEY);
     onLogout();
   }
 
@@ -248,7 +253,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <a
+                      
                         href={`mailto:${s.email}`}
                         className="text-primary hover:underline font-medium"
                       >
@@ -278,7 +283,14 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/admin/signups`, { credentials: 'include' })
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      setAuthed(false);
+      return;
+    }
+    fetch(`${API_BASE}/api/admin/signups`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then(res => setAuthed(res.ok))
       .catch(() => setAuthed(false));
   }, []);
