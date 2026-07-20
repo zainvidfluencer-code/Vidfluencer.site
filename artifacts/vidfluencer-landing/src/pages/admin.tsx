@@ -2,9 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'wouter';
 import logoSrc from '@/assets/logo.png';
 
-// In production (GitHub Pages / custom domain), VITE_API_URL is set to the
-// Replit API server URL (e.g. https://api.vidfluencer.io).
-// In local dev it is empty, so fetch paths stay relative.
 const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
 const TOKEN_KEY = 'admin_token';
 
@@ -25,7 +22,6 @@ function formatDate(iso: string) {
   });
 }
 
-// ─── Login ────────────────────────────────────────────────────────────────────
 function LoginPage({ onSuccess }: { onSuccess: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -122,7 +118,6 @@ function LoginPage({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
-// ─── Dashboard ────────────────────────────────────────────────────────────────
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [signups, setSignups] = useState<Signup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,7 +166,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
       </header>
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-12">
-
         <div className="flex items-end justify-between mb-8">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Waitlist Signups</h1>
@@ -219,3 +213,78 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         {!loading && !error && signups.length > 0 && (
           <div className="rounded-2xl border border-gray-100 shadow-sm shadow-gray-100 overflow-hidden">
             <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider w-16">#</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Full Name</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Signed Up</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {signups.map((s, i) => (
+                  <tr key={s.id} className="hover:bg-blue-50/40 transition-colors group">
+                    <td className="px-6 py-4 text-gray-300 font-mono text-xs">{i + 1}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <span className="text-primary text-xs font-bold">
+                            {s.fullName.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <span className="font-semibold text-gray-900">{s.fullName}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <a href={`mailto:${s.email}`} className="text-primary hover:underline font-medium">
+                        {s.email}
+                      </a>
+                    </td>
+                    <td className="px-6 py-4 text-gray-400">{formatDate(s.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="bg-gray-50 border-t border-gray-100 px-6 py-3 flex items-center justify-between">
+              <span className="text-xs text-gray-400">Showing all {signups.length} {signups.length === 1 ? 'entry' : 'entries'}</span>
+              <span className="text-xs text-gray-400">Sorted by newest first</span>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+export default function AdminPage() {
+  const [authed, setAuthed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      setAuthed(false);
+      return;
+    }
+    fetch(`${API_BASE}/api/admin/signups`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setAuthed(res.ok))
+      .catch(() => setAuthed(false));
+  }, []);
+
+  if (authed === null) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <svg className="animate-spin h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+      </div>
+    );
+  }
+
+  return authed
+    ? <Dashboard onLogout={() => setAuthed(false)} />
+    : <LoginPage onSuccess={() => setAuthed(true)} />;
+}
