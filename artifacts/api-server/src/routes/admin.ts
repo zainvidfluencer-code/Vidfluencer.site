@@ -30,8 +30,8 @@ router.post("/admin/login", (req, res): void => {
 
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000, // 24h
     path: "/",
   });
