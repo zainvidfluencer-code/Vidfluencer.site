@@ -59,7 +59,6 @@ function LoginPage({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
-      {/* Top bar matching site nav */}
       <header className="border-b border-gray-100 px-6 py-4">
         <Link href="/">
           <img src={logoSrc} alt="Vidfluencer.io" className="h-10 w-auto object-contain cursor-pointer" />
@@ -68,7 +67,6 @@ function LoginPage({ onSuccess }: { onSuccess: () => void }) {
 
       <div className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-sm">
-          {/* Subtle gradient blob */}
           <div className="absolute -z-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl opacity-60 -translate-x-1/2 -translate-y-1/2" />
 
           <div className="text-center mb-8">
@@ -154,8 +152,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
-
-      {/* Nav — mirrors site style */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -174,10 +170,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         </div>
       </header>
 
-      {/* Page body */}
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-12">
 
-        {/* Header row */}
         <div className="flex items-end justify-between mb-8">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Waitlist Signups</h1>
@@ -199,7 +193,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         </div>
 
-        {/* States */}
         {loading && (
           <div className="flex items-center justify-center py-24 text-gray-400 text-sm gap-2">
             <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -223,90 +216,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         )}
 
-        {/* Table */}
         {!loading && !error && signups.length > 0 && (
           <div className="rounded-2xl border border-gray-100 shadow-sm shadow-gray-100 overflow-hidden">
             <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider w-16">#</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Full Name</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Signed Up</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {signups.map((s, i) => (
-                  <tr
-                    key={s.id}
-                    className="hover:bg-blue-50/40 transition-colors group"
-                  >
-                    <td className="px-6 py-4 text-gray-300 font-mono text-xs">{i + 1}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <span className="text-primary text-xs font-bold">
-                            {s.fullName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <span className="font-semibold text-gray-900">{s.fullName}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      
-                        href={`mailto:${s.email}`}
-                        className="text-primary hover:underline font-medium"
-                      >
-                        {s.email}
-                      </a>
-                    </td>
-                    <td className="px-6 py-4 text-gray-400">{formatDate(s.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Footer bar */}
-            <div className="bg-gray-50 border-t border-gray-100 px-6 py-3 flex items-center justify-between">
-              <span className="text-xs text-gray-400">Showing all {signups.length} {signups.length === 1 ? 'entry' : 'entries'}</span>
-              <span className="text-xs text-gray-400">Sorted by newest first</span>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
-
-// ─── Auth gate ────────────────────────────────────────────────────────────────
-export default function AdminPage() {
-  const [authed, setAuthed] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (!token) {
-      setAuthed(false);
-      return;
-    }
-    fetch(`${API_BASE}/api/admin/signups`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => setAuthed(res.ok))
-      .catch(() => setAuthed(false));
-  }, []);
-
-  if (authed === null) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <svg className="animate-spin h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-        </svg>
-      </div>
-    );
-  }
-
-  return authed
-    ? <Dashboard onLogout={() => setAuthed(false)} />
-    : <LoginPage onSuccess={() => setAuthed(true)} />;
-}
